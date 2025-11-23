@@ -3,13 +3,43 @@ from umqtt.simple import MQTTClient
 import sys
 import time
 import mcu
+from machine import Pin
+from machine import Pin, ADC, PWM
+
+gpio = mcu.gpio()
+RED = Pin(gpio.D5, Pin.OUT)  # GPIO14，紅色LED
+GREEN = Pin(gpio.D6, Pin.OUT)  # GPIO12，綠色LED
+BLUE = Pin(gpio.D7, Pin.OUT)  # GPIO13，藍色LED
 
 
 #########################函式與類別定義#########################
+def light_control():
+    light_sensor = ADC(0)  # 建立 ADC物件，腳位為ADC0
+    light_sensor_running = light_sensor.read()  # 讀取光敏電阻數值(0~1023)
+    if light_sensor_running < 700:  # 光線較暗
+        RED.value(0)  # 紅色LED熄滅
+        BLUE.value(0)  # 藍色LED熄滅
+        GREEN.value(0)  # 綠色LED熄滅
+    else:  # 光線較亮
+        RED.value(1)  # 紅色LED熄滅
+        BLUE.value(1)  # 藍色LED熄滅
+        GREEN.value(1)  # 綠色LED熄滅
+
+
 def on_message(topic, msg):
     msg = msg.decode("utf8")
     topic = topic.decode("utf8")
     print(f"my subscribed topic:{topic}, received message:{msg}")
+    if msg == "auto":
+        light_control()
+    elif msg == "on":
+        RED.value(1)  # 紅色LED亮
+        GREEN.value(1)  # 綠色LED亮
+        BLUE.value(1)  # 藍色LED亮
+    elif msg == "off":
+        RED.value(0)  # 紅色LED熄滅
+        GREEN.value(0)  # 綠色LED熄滅
+        BLUE.value(0)  # 藍色LED熄滅
 
 
 #########################宣告與設定#########################
