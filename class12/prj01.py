@@ -1,6 +1,6 @@
 #########################匯入模組###########################
 import time
-import mcu
+import class13.mcu as mcu
 from machine import Pin
 from machine import ADC, PWM
 

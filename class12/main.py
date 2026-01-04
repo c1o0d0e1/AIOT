@@ -2,7 +2,7 @@
 from umqtt.simple import MQTTClient
 import sys
 import time
-import mcu
+import class13.mcu as mcu
 from machine import Pin, I2C
 from machine import ADC
 import ssd1306
